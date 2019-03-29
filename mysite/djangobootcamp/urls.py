@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-# main 어플리케이션의 view에서 index 페이지를 불러오자
-from main.views import index
+# index는 대문, blog는 게시판
+from main.views import index, blog
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # 웹사이트의 첫화면은 index 페이지이다
     path('', index),
+    # URL:80/blog에 접속하면 blog 페이지
+    path('blog/', blog),
 ]
