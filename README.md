@@ -91,12 +91,58 @@ def blog(request):
 **프로젝트를 실행할때마다 반복해서 사용하는 명령어입니다**  
 파이썬 가상환경 설정 
 ```console
-root@goorm:/workspace/django/mysite# source myvenv/bin/activate
+root@goorm:/workspace/djangoBootcamp/mysite# source myvenv/bin/activate
 ```
 이제 `django` 웹서버를 실행합시다   
 구름 IDE를 사용하는 경우  
 상단 메뉴바의 `프로젝트 -> 실행 URL과 포트`에서   
 80번 포트를 설정 후 접속합니다
 ```console
-(myvenv) root@goorm:/workspace/django/mysite# python manage.py runserver 0:80 
+(myvenv) root@goorm:/workspace/djangoBootcamp/mysite# python manage.py runserver 0:80 
+```
+## `Model` 만들기
+
+게시판에서 각각의 게시글에 저장될 공간을 만듭니다.  
+`Post` 게시글 마다 `postname`(제목), `contents`(내용)이 존재합니다.  
+이를 파이썬으로 구현해봅니다.
+
+`mysite/main/models.py`
+```python
+from django.db import models
+
+# Create your models here.
+# 게시글(Post)엔 제목(postname), 내용(contents)이 존재합니다
+class Post(models.Model):
+    postname = models.CharField(max_length=50)
+    contents = models.TextField()
+```
+모델을 만들었고 이제 `django`의 db에 `migrate`해줍니다  
+게시글마다 제목과 내용을 저장합니다  
+
+##### `Ctrl + C`를 눌러 웹서버를 종료 후 `migration`
+
+```console
+(myvenv) root@goorm:/workspace/djangoBootcamp/mysite# python3 manage.py makemigrations main
+```
+
+```console
+(myvenv) root@goorm:/workspace/djangoBootcamp/mysite# python3 manage.py migrate
+```
+아래와 같이 진행된다면 `migration` 완료!   
+![img/blogMigration.png](img/blogMigration.png)  
+
+
+##### `Admin`에 권한
+관리자(`admin`)이 게시글(`Post`)에 접근할 권한을 줍니다.  
+게시글 게시, 삭제, 수정, 저장 등 여러 작업을 할 수 있게 합니다.  
+
+`mysite/main/admin.py`
+```python
+from django.contrib import admin
+# 게시글(Post) Model을 불러옵니다
+from .models import Post
+
+# Register your models here.
+# 관리자(admin)가 게시글(Post)에 접근 가능
+admin.site.register(Post)
 ```
