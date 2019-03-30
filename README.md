@@ -258,5 +258,129 @@ def blog(request):
 ```
 ![img/blogPosting.png](img/blogPosting.png)  
 
-기본적인 게시판을 만들었습니다  
-생각보다 어렵지 않죠?
+아직 게시판이라 하기엔 부족한게 많습니다  
+게시판에 있을 만한 요소들을 추가해봅니다  
+
+### 게시글 세부페이지
+게시글마다 `postdetails`세부페이지를 만들어봅니다  
+`mysite/main/views.py`  
+`posting.html`게시글-세부페이지에 특정 `post` 1개만 가져옵니다    
+```python
+from django.shortcuts import render
+# View에 Model(Post 게시글) 가져오기
+from .models import Post
+
+# index.html 페이지를 부르는 index 함수
+def index(request):
+    return render(request, 'main/index.html')
+
+# blog.html 페이지를 부르는 blog 함수
+def blog(request):
+    # 모든 Post를 가져와 postlist에 저장합니다
+    postlist = Post.objects.all()
+    # blog.html 페이지를 열 때, 모든 Post인 postlist도 같이 가져옵니다 
+    return render(request, 'main/blog.html', {'postlist':postlist})
+
+# blog의 게시글(posting)을 부르는 posting 함수
+def posting(request, pk):
+    # 게시글(Post) 중 pk(primary_key)를 이용해 하나의 게시글(post)를 찾습니다
+    post = Post.objects.get(pk=pk)
+    # posting.html 페이지를 열 때, 찾아낸 게시글(post)을 같이 가져옵니다 
+    return render(request, 'main/posting.html', {'post':post})
+```
+
+
+`mysite/djangobootcamp/urls.py`  
+첫번째 게시글 세부페이지 들어가기 - [http://0:80/blog/1](http://0:80/blog/1)  
+```python
+from django.contrib import admin
+from django.urls import path
+# index는 대문, blog는 게시판
+from main.views import index, blog, posting
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    # 웹사이트의 첫화면은 index 페이지이다 + URL이름은 index이다
+    path('', index, name='index'),
+    # URL:80/blog에 접속하면 blog 페이지 + URL이름은 blog이다
+    path('blog/', blog, name='blog'),
+    # URL:80/blog/숫자로 접속하면 게시글-세부페이지(posting)
+    path('blog/<ink:pk>',posting, name="posting"),
+]
+
+```
+
+`mysite/main/templates/main/posting.html`  
+
+개별 게시글을 보여줍니다  
+
+```html
+<html>
+    <head>
+        <title>Posting!</title>
+    </head>
+    <body>
+        <h1>게시글 개별 페이지입니다</h1>
+        <p>{{post.postname}}</p>
+        <p>{{post.contents}}</p>
+    </body>
+</html>
+```
+![img/posting.png](img/posting.png)  
+
+게시글-세부페이지 완성!
+
+### `blog.html`에서 `posting.html` 링크
+`blog` 게시판에서 게시글을 클릭하면     
+`posting` 세부페이지로 갑니다
+##### `mysite/main/templates/main/blog.html`
+`<tr>`태그에 onclick 요소를 넣어 클릭시 넘어가게 합시다  
+`자기URL`위치에 자신의 URL을 넣습니다
+
+```html
+<html>
+    <head>
+        <title>Blog List</title>
+    </head>
+    <body>
+        <h1>게시판 페이지입니다</h1>
+        <!-- 게시판(postlist)의 게시글(list)을 하나씩 보여줍니다 -->
+        <!-- {와 %로 이루어진 구문 내부엔 파이썬이 사용됩니다 -->
+        <table>
+        {% for list in postlist %}
+            <!-- 게시글 클릭시 세부페이지로 넘어갑니다-->
+            <tr onclick="location.href='자기URL/blog/{{ list.pk }}/'">
+                <td>{{list.postname}}</td>
+                <td>{{list.contents}}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </body>
+</html>
+```
+### `posting` 페이지에서 `blog`페이지로 링크
+
+##### `mysite/main/templates/main/posting.html`
+`<a href="자기URL/blog/">목록</a>`를 추가합니다  
+`자기URL`은 자신의 url에 맞춰 수정합니다
+`mysite/main/templates/main/posting.html`
+```html
+<html>
+    <head>
+        <title>Posting!</title>
+    </head>
+    <body>
+        <h1>게시글 개별 페이지입니다</h1>
+        <p>{{post.postname}}</p>
+        <p>{{post.contents}}</p>
+        <a href="자기URL/blog/">blog</a>
+    </body>
+</html>
+```
+`blog`로 가는 링크 추가!  
+
+![img/postingWithBlog1.png](img/postingWithBlog1.png)  
+![img/postingWithBlog2.png](img/postingWithBlog2.png)  
+
+기본적인 게시판 만들기 재밌으셨나요?
+수고하셨습니다
