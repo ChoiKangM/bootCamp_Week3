@@ -146,3 +146,61 @@ from .models import Post
 # 관리자(admin)가 게시글(Post)에 접근 가능
 admin.site.register(Post)
 ```
+
+#### `Superuser` 만들기
+`Superuser`는 `django` 프로젝트의 모든 `app` 및 `object`를 관리하는 계정입니다.  
+`manage.py`를 통해 `Superuser`계정이 생성되며  
+`username`, `email address`, 그리고 강한 `password`가 필요합니다.
+
+```console
+(myvenv) root@goorm:/workspace/djangoBootcamp/mysite# python3 manage.py createsuperuser
+```
+
+아래와 같이 `Superuser` 계정을 생성합니다.  
+예측하기 쉬운 비밀번호의 경우 `django`가 다시 확인합니다  
+![img/createSuperuser.png](img/createSuperuser.png) 
+
+
+서버를 키고 생성한 `Superuser` 계정을 확인합니다  
+
+```console
+(myvenv) root@goorm:/workspace/djangoBootcamp/mysite# python3 manage.py runserver 0:80
+```
+[http://자신의URL:80/admin](http://0:80/admin)으로 접속합니다  
+`Superuser`의 아이디와 비밀번호를 입력해 관리자 페이지로 들어갑니다  
+![img/django_administration.png](img/django_administration.png)  
+
+위의 페이지가 나오면 성공!  
+
+#### 게시글 작성하기
+![img/admin_post.png](img/admin_post.png)  
+`add` 버튼을 눌러 게시글을 작성합니다
+
+![img/add_post.png](img/add_post.png)  
+
+게시글을 2개 작성합니다  
+`postname`과 `contents`를 구분하기 위해 다른 내용으로 작성합니다   
+![img/post_object.png](img/post_object.png)  
+현재 코드에서 게시글을 작성하면  
+게시글 제목이 나오지 않고 `Post object`로 나옵니다  
+이를 `postname`이 `Post object` 대신 들어가도록 개선합니다  
+이땐 게시글(`Post`)의 `model`을 개선합니다 
+
+`mysite/main/models.py`
+```python
+from django.db import models
+
+# Create your models here.
+# 게시글(Post)엔 제목(postname), 내용(contents)이 존재합니다
+class Post(models.Model):
+    postname = models.CharField(max_length=50)
+    contents = models.TextField()
+    
+    # 게시글의 제목(postname)이 Post object 대신하기
+    def __str__(self):
+        return self.postname
+```
+![img/postname.png](img/postname.png)  
+
+안의 내용을 알 수 없는 `Post Object` 대신  
+게시글(`Post`)의 제목(`postname`)으로 개선했습니다 
