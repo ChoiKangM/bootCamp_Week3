@@ -119,7 +119,7 @@ class Post(models.Model):
 모델을 만들었고 이제 `django`의 db에 `migrate`해줍니다  
 게시글마다 제목과 내용을 저장합니다  
 
-##### `Ctrl + C`를 눌러 웹서버를 종료 후 `migration`
+#### `Ctrl + C`를 눌러 웹서버를 종료 후 `migration`
 
 ```console
 (myvenv) root@goorm:/workspace/djangoBootcamp/mysite# python3 manage.py makemigrations main
@@ -132,7 +132,7 @@ class Post(models.Model):
 ![img/blogMigration.png](img/blogMigration.png)  
 
 
-##### `Admin`에 권한
+### `Admin`에 권한
 관리자(`admin`)이 게시글(`Post`)에 접근할 권한을 줍니다.  
 게시글 게시, 삭제, 수정, 저장 등 여러 작업을 할 수 있게 합니다.  
 
@@ -147,7 +147,7 @@ from .models import Post
 admin.site.register(Post)
 ```
 
-#### `Superuser` 만들기
+### `Superuser` 만들기
 `Superuser`는 `django` 프로젝트의 모든 `app` 및 `object`를 관리하는 계정입니다.  
 `manage.py`를 통해 `Superuser`계정이 생성되며  
 `username`, `email address`, 그리고 강한 `password`가 필요합니다.
@@ -172,7 +172,7 @@ admin.site.register(Post)
 
 위의 페이지가 나오면 성공!  
 
-#### 게시글 작성하기
+### 게시글 작성하기
 ![img/admin_post.png](img/admin_post.png)  
 `add` 버튼을 눌러 게시글을 작성합니다
 
@@ -204,3 +204,59 @@ class Post(models.Model):
 
 안의 내용을 알 수 없는 `Post Object` 대신  
 게시글(`Post`)의 제목(`postname`)으로 개선했습니다 
+
+### 목록(`blog`)페이지에 게시판 보여주자
+
+입력한 게시글을 [http://0:80/blog](http://0:80/blog) 페이지에 띄워봅시다  
+
+`MTV`패턴을 기억하나시나요?
+
+`View`(`blog` 함수)가 `Model`(`Post` 게시글)을 가져오고,   
+`Template`(`index.html`)에 `Model`(`Post` 게시글)을 뿌려줍니다  
+아직 `MTV`패턴이 어색할텐데 직접 만들며 이해해봅니다.  
+
+`mysite/main/views.py`  
+`View`(`blog` 함수)가 `Model`(`Post` 게시글)을 가져옵니다
+```python
+from django.shortcuts import render
+# View에 Model(Post 게시글) 가져오기
+from .models import Post
+
+# index.html 페이지를 부르는 index 함수
+def index(request):
+    return render(request, 'main/index.html')
+
+# blog.html 페이지를 부르는 blog 함수
+def blog(request):
+    # 모든 Post를 가져와 postlist에 저장합니다
+    postlist = Post.objects.all()
+    # blog.html 페이지를 열 때, 모든 Post인 postlist도 같이 가져옵니다 
+    return render(request, 'main/blog.html', {'postlist':postlist})
+```
+
+`mysite/main/templates/main/blog.html`  
+`Template`(`index.html`)에 `Model`(`Post` 게시글)을 뿌려줍니다
+```html
+<html>
+    <head>
+        <title>Blog List</title>
+    </head>
+    <body>
+        <h1>게시판 페이지입니다</h1>
+        <!-- 게시판(postlist)의 게시글(list)을 하나씩 보여줍니다 -->
+        <!-- {%%} 내부엔 파이썬이 사용됩니다 -->
+        <table>
+        {% for list in postlist %}
+            <tr>
+                <td>{{list.postname}}</td>
+                <td>{{list.contents}}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </body>
+</html>
+```
+![img/blogPosting.png](img/blogPosting.png)  
+
+기본적인 게시판을 만들었습니다  
+생각보다 어렵지 않죠?
