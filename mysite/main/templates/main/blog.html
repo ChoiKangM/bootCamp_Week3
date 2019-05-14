@@ -9,7 +9,7 @@
         <table>
         {% for list in postlist %}
             <!-- 게시글 클릭시 세부페이지로 넘어갑니다-->
-            <tr onclick="location.href='https://haedal11233.run.goorm.io/blog/{{ list.pk }}/'">
+            <tr onclick="location.href='../blog/{{ list.pk }}/'">
                 <td>{{list.postname}}</td>
                 <td>{{list.contents}}</td>
             </tr>
