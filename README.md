@@ -1,5 +1,4 @@
-# 해달 부트캠프 3주차
-# 게시판 만들기
+# 기본적인 게시판 만들기
 
 ### `Django`의 구조
 `Django`는 `MVC`모델을 `MTV`라고 부릅니다  
@@ -38,6 +37,21 @@ Create(생성), Read(읽기), Update(갱신), Delete(삭제)를 묶어서 일컫
 | Update | 갱신 | UPDATE |
 | Delete | 삭제 | DELETE |
 
+# [첫 페이지 만들기](https://github.com/haedal-with-knu/djangoBootcamp/blob/master/firstPage.md) 코드 가져오기
+
+`첫 페이지 만들기` 강의에서 만든 코드를 정리해두었습니다  
+가져옵니다
+```console
+root@goorm:/workspace/djangoBootcamp# git clone https://github.com/kei01138/bootCamp_Week2
+```
+
+`bootCamp_Week2` 폴더 내부의 `mysite` 폴더를 밖으로 꺼냅시다  
+마우스로 왼쪽의 폴더 트리에서 꺼내도 되고,  
+리눅스 커맨드를 이용해 꺼내도 됩니다  
+```console
+root@goorm:/workspace/djangoBootcamp# mv bootCamp_Week2/mysite/ /workspace/djangoBootcamp/mysite
+```
+지난 강의가 마무리될 때 코드와 동일한 상황입니다
 
 ## 목록 페이지 만들자
 
@@ -305,7 +319,7 @@ urlpatterns = [
     # URL:80/blog에 접속하면 blog 페이지 + URL이름은 blog이다
     path('blog/', blog, name='blog'),
     # URL:80/blog/숫자로 접속하면 게시글-세부페이지(posting)
-    path('blog/<ink:pk>',posting, name="posting"),
+    path('blog/<int:pk>',posting, name="posting"),
 ]
 
 ```
@@ -382,5 +396,8 @@ urlpatterns = [
 ![img/postingWithBlog1.png](img/postingWithBlog1.png)  
 ![img/postingWithBlog2.png](img/postingWithBlog2.png)  
 
-기본적인 게시판 만들기 재밌으셨나요?
+기본적인 게시판 만들기 재밌으셨나요?  
 수고하셨습니다
+
+## 다음 강의는
+### [4. 이미지 업로드](https://github.com/haedal-with-knu/djangoBootcamp/blob/master/uploadImg.md)
